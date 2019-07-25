@@ -1,0 +1,21 @@
+name: Support Vector Classifier
+hyperparameters:
+- name: log_C
+  type: float
+  min: -2.0
+  max: 2.0
+  description: 'Logarithm of C, the penalty classifier'
+- name: kernel
+  type: categorical
+  values:
+    - "rbf"
+    - "linear"
+    - "poly"
+    - "sigmoid"
+  description: 'Kernel type'
+- name: shrinking
+  type: categorical
+  values:
+    - "true"
+    - "false"
+  description: "Whether to use the shrinking heuristic"
