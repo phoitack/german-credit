@@ -80,6 +80,14 @@ def categorize_data(data):
     return data
 
 
+def int_to_float_data(data):
+    category_dict = create_category_dict()
+    for column in data.columns:
+        if column not in category_dict:
+            data[column] = data[column].astype("float")
+    return data
+
+
 def transform_target(data):
     data['Good_credit'] = 2 - data['Good_credit']
     return data

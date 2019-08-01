@@ -1,5 +1,5 @@
 import pandas as pd
-from .utils import transform_target, categorize_data
+from .utils import transform_target, categorize_data, int_to_float_data
 
 
 class DataLoader:
@@ -42,6 +42,7 @@ class DataLoader:
         data.columns = columns
 
         data = categorize_data(data)
+        data = int_to_float_data(data)
         data = transform_target(data)
 
         features = data[[c for c in data.columns if c != 'Good_credit']]
