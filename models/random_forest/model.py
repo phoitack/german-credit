@@ -1,5 +1,6 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 import pandas as pd
@@ -33,12 +34,54 @@ class Model:
         :param X: Features
         :param y: Target
         """
-        self.standard_scaler = StandardScaler()
+        feature_columns = ['Status_current_account',
+                           'Duration',
+                           'Credit_history',
+                           'Purpose',
+                           'Credit_amount',
+                           'Savings',
+                           'Employment_status',
+                           'Installment_rate',
+                           'Personal_status',
+                           'Other_debtors',
+                           'Residence_since',
+                           'Property',
+                           'Age_years',
+                           'Other_installment_plans',
+                           'Housing',
+                           'Number_existing_credits',
+                           'Job',
+                           'Number_liable_people',
+                           'Telephone',
+                           'Foreign_worker']
+
+        numeric_features = ['Duration',
+                            'Credit_amount',
+                            'Installment_rate',
+                            'Residence_since',
+                            'Age_years',
+                            'Number_existing_credits',
+                            'Number_liable_people']
+        numeric_transformer = Pipeline(steps=[
+            ('scaler', StandardScaler())])
+
+        categorical_features = [column for column in feature_columns if column not in numeric_features]
+        categorical_transformer = Pipeline(steps=[
+            ('onehot', OneHotEncoder(handle_unknown='ignore'))])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', numeric_transformer, numeric_features),
+                ('cat', categorical_transformer, categorical_features)])
+
+        # Append classifier to preprocessing pipeline.
+        # Now we have a full prediction pipeline.
         self.model = RandomForestClassifier(n_estimators=100,
                                             criterion=self.criterion,
                                             max_depth=self.max_depth,
                                             max_features=self.max_features)
-        self.pipeline = Pipeline([("StandardScaler", self.standard_scaler), ("RandomForest", self.model)])
+        self.pipeline = Pipeline(steps=[('preprocessor', preprocessor),
+                                        ('random_forest', self.model)])
         self.pipeline.fit(X=X, y=y.values.ravel())
 
     def predict(self, X):
@@ -52,6 +95,6 @@ class Model:
         """
         discrete_prediction = self.pipeline.predict(X)
         predictions = self.pipeline.predict_proba(X)
-        predictions = pd.DataFrame(predictions, columns=['PSetosa', 'PVersicolor', 'PVirginica'])
-        predictions['Prediction'] = discrete_prediction
+        predictions = pd.DataFrame(predictions, columns=['Probability_no', 'Probability_yes'])
+        predictions['Good_credit'] = discrete_prediction
         return predictions

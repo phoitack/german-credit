@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.datasets import load_iris
+from .utils import transform_target, categorize_data
 
 
 class DataLoader:
@@ -15,9 +15,36 @@ class DataLoader:
                  and need to be the same size. Cubonacci automatically infers the relevant schemas. Column names or
                  dictionary keys can only contain letters and underscores at the moment.
         """
-        X, _ = load_iris(return_X_y=True)
-        columns = ["Sepal_Length", "Sepal_Width", "Petal_Length", "Petal_Width"]
-        features = pd.DataFrame(X, columns=columns)
-        y = ['Setosa'] * 50 + ['Versicolor'] * 50 + ['Virginica'] * 50
-        target = pd.DataFrame({"Species": y})
+        url = "http://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data"
+
+        data = pd.read_csv(url, delimiter=' ', header=None)
+        columns = ['Status_current_account',
+                   'Duration',
+                   'Credit_history',
+                   'Purpose',
+                   'Credit_amount',
+                   'Savings',
+                   'Employment_status',
+                   'Installment_rate',
+                   'Personal_status',
+                   'Other_debtors',
+                   'Residence_since',
+                   'Property',
+                   'Age_years',
+                   'Other_installment_plans',
+                   'Housing',
+                   'Number_existing_credits',
+                   'Job',
+                   'Number_liable_people',
+                   'Telephone',
+                   'Foreign_worker',
+                   'Good_credit']
+        data.columns = columns
+
+        data = categorize_data(data)
+        data = transform_target(data)
+
+        features = data[[c for c in data.columns if c != 'Good_credit']]
+        target = data['Good_credit']
+
         return features, target

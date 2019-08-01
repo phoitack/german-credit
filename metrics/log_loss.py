@@ -8,4 +8,4 @@ def log_loss(y_true, y_pred):
     :param y_pred: The corresponding output from the trained model
     :return: Scalar metric score
     """
-    return log_loss_sk(y_true, y_pred[['PSetosa', 'PVersicolor', 'PVirginica']])
+    return log_loss_sk(y_true, y_pred[['Probability_no', 'Probability_yes']])
