@@ -8,4 +8,4 @@ def f1_score(y_true, y_pred):
     :param y_pred: The corresponding output from the trained model
     :return: Scalar metric score
     """
-    return f1_score_sk(y_true, y_pred["Prediction"], average="weighted")
+    return f1_score_sk(y_true, y_pred["Good_credit"], average="weighted")

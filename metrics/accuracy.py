@@ -8,4 +8,4 @@ def accuracy(y_true, y_pred):
     :param y_pred: The corresponding output from the trained model
     :return: Scalar metric score
     """
-    return accuracy_score(y_true=y_true, y_pred=y_pred["Prediction"])
+    return accuracy_score(y_true=y_true, y_pred=y_pred["Good_credit"])
